@@ -1,1 +1,4 @@
-MPT Folder > Y:\Rafael\Cables\Cable Test\Programs
+\MPT Folder > Y:\Rafael\Cables\Cable Test\Programs
+MPT Folder > C:\Users\mig_rprod\Desktop\test
+Test Results > C:\Users\mig_rprod\Desktop\TestResults
+Mpt links > C:\Users\mig_rprod\Desktop\TestResults\MPTLinks.txt
