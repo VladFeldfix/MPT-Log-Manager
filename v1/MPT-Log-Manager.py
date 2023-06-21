@@ -1,4 +1,5 @@
 from SmartConsole import *
+import shutil
 
 class main:
     # constructor
@@ -80,16 +81,10 @@ class main:
 
                         # count the lines
                         lines_qty += 1
-                    
+
                     # create backup
-                    if lines_qty > 100000:
-                        oldName = root+"/"+file
-                        n = 1
-                        newName = oldName.replace(".lot", "("+str(n)+").bakup")
-                        while not os.path.isfile(newName):
-                            n += 1
-                            newName.replace("("+str(n-1)+").bakup", "("+str(n)+").bakup")
-                        os.rename(oldName, newName)
+                    if lines_qty > 500000:
+                        self.make_a_backup(root+"/"+file, 1)
                 
                 # read lots files
                 if ".mpt" in file:
@@ -98,6 +93,19 @@ class main:
                     tmp = root.split("\\")
                     Group = tmp[-2]
                     mptlinks.append((PartNumber, Group, root, file))
+
+                # make a copy of the txt file 
+                if ".txt" in file:
+                    path = root+"/"+file
+                    PartNumber = file.replace(".txt", "")
+                    test = root.replace("\\", "/")
+                    test = test.split("/")
+                    test = test[-1]
+                    if PartNumber == test:
+                        if not os.path.isdir(self.path_test_results+"/"+PartNumber):
+                            os.makedirs(self.path_test_results+"/"+PartNumber)
+                        shutil.copy(path, self.path_test_results+"/"+PartNumber+"/"+file)
+                        self.sc.print(self.path_test_results+"/"+PartNumber+"/"+file)
         
         # create mpt links
         MPTlinksfile = open(self.path_mpt_links, 'w')
@@ -116,6 +124,16 @@ class main:
         # restart
         self.sc.restart()
 
+    def make_a_backup(self, root, n):
+        oldName = root
+        newName = oldName.replace(".lot", "_("+str(n)+").backup")
+        if not os.path.isfile(newName):
+            self.sc.print("Backup created: "+newName)
+            os.rename(oldName, newName)
+        else:
+            n += 1
+            self.make_a_backup(oldName, n)
+    
     def save_log(self, PartNumber, SerialNumber, DateCode, Log):
         PartNumber = self.filter(PartNumber)
         SerialNumber = self.filter(SerialNumber)
