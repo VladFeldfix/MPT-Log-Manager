@@ -45,8 +45,8 @@
    'C:\\Users\\mig_rprod\\Desktop\\New '
    'Tools\\MPT-Log-Manager\\v1\\MPT-Log-Manager.py',
    'PYSOURCE'),
-  ('python310.dll', 'C:\\Python310\\python310.dll', 'BINARY'),
   ('VCRUNTIME140.dll', 'C:\\Python310\\VCRUNTIME140.dll', 'BINARY'),
+  ('python310.dll', 'C:\\Python310\\python310.dll', 'BINARY'),
   ('select', 'C:\\Python310\\DLLs\\select.pyd', 'EXTENSION'),
   ('_decimal', 'C:\\Python310\\DLLs\\_decimal.pyd', 'EXTENSION'),
   ('_hashlib', 'C:\\Python310\\DLLs\\_hashlib.pyd', 'EXTENSION'),

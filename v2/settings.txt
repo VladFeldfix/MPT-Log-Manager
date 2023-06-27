@@ -1,0 +1,3 @@
+MPT Folder > C:\Users\mig_rprod\Desktop\New folder\MPT
+Test Results > C:\Users\mig_rprod\Desktop\New folder\TestResults
+Mpt links > C:\Users\mig_rprod\Desktop\New folder\TestResults\MPTLinks.txt

@@ -8,7 +8,7 @@ class main:
         self.sc = SmartConsole("MPT Log Manager", "1.0")
 
         # set-up main memu
-        self.sc.main_menu["RUN"] = self.run
+        self.sc.add_main_menu_item("RUN", self.run)
 
         # get settings
         self.main_path = self.sc.get_setting("MPT Folder")
@@ -30,7 +30,7 @@ class main:
             # go over each file
             for file in files:
                 # read lots files
-                if ".lot" in file and not ".bak" in file:
+                if ".lot" in file and not ".bak" in file and not "__" in file:
                     # read the lot file
                     lotfile = open(root+"/"+file, 'r')
                     lines = lotfile.readlines()
@@ -40,51 +40,52 @@ class main:
                     SerialNumber = ""
                     DateCode = ""
                     PartNumber = file.replace(".lot", "")
-                    Log = []
-                    IgoneDashedLine = False
-                    SaveLog = False
-                    lines_qty = 0
+                    if lotfile == self.main_path+"/"+PartNumber+"/"+file:
+                        Log = []
+                        IgoneDashedLine = False
+                        SaveLog = False
+                        lines_qty = 0
 
-                    # go over every line in the lot file
-                    for line in lines:
-                        # only if Pass variables becomes True save this log
-                        Pass = False
+                        # go over every line in the lot file
+                        for line in lines:
+                            # only if Pass variables becomes True save this log
+                            Pass = False
 
-                        # strip line from \n
-                        line = line.replace("\n", "")
-                        
-                        # start a log
-                        if "+---------------------------------+" in line:
-                            if not IgoneDashedLine:
-                                Log = []
-                                SaveLog = False
-                            IgoneDashedLine = not IgoneDashedLine
-                        
-                        # get date code
-                        if "LOT NUMBER".upper() in line.upper():
-                            splitted = line.split(":")
-                            DateCode = splitted[1].replace("|", "")
-                            DateCode = DateCode.strip()
-                        
-                        # get serial number
-                        if "Serial Number".upper() in line.upper():
-                            splitted = line.split(":")
-                            SerialNumber = splitted[1].strip()
-                        
-                        # get test result
-                        if "TEST PASSED".upper() in line.upper():
-                            SaveLog = True
-                        
-                        Log.append(line)
-                        if SaveLog:
-                            self.save_log(PartNumber, SerialNumber, DateCode, Log)
+                            # strip line from \n
+                            line = line.replace("\n", "")
+                            
+                            # start a log
+                            if "+---------------------------------+" in line:
+                                if not IgoneDashedLine:
+                                    Log = []
+                                    SaveLog = False
+                                IgoneDashedLine = not IgoneDashedLine
+                            
+                            # get date code
+                            if "LOT NUMBER".upper() in line.upper():
+                                splitted = line.split(":")
+                                DateCode = splitted[1].replace("|", "")
+                                DateCode = DateCode.strip()
+                            
+                            # get serial number
+                            if "Serial Number".upper() in line.upper():
+                                splitted = line.split(":")
+                                SerialNumber = splitted[1].strip()
+                            
+                            # get test result
+                            if "TEST PASSED".upper() in line.upper():
+                                SaveLog = True
+                            
+                            Log.append(line)
+                            if SaveLog:
+                                self.save_log(PartNumber, SerialNumber, DateCode, Log)
 
-                        # count the lines
-                        lines_qty += 1
+                            # count the lines
+                            lines_qty += 1
 
-                    # create backup
-                    if lines_qty > 500000:
-                        self.make_a_backup(root+"/"+file, 1)
+                        # create backup
+                        if lines_qty > 500000:
+                            self.make_a_backup(root+"/"+file, 1)
                 
                 # read lots files
                 if ".mpt" in file:
