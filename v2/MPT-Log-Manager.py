@@ -24,6 +24,7 @@ class main:
         self.sc.start()
 
     def run(self):
+        self.sc.print("Loading...")
         self.main_path = self.main_path.replace("\\", "/")
         # go over all the files
         mptlinks = []
@@ -96,8 +97,9 @@ class main:
                 if os.path.isfile(path_to_txt_file):
                     if not os.path.isdir(self.path_test_results+"/"+PartNumber):
                         os.makedirs(self.path_test_results+"/"+PartNumber)
-                    self.sc.print(PartNumber+".txt")
-                    shutil.copy(path_to_txt_file, self.path_test_results+"/"+PartNumber+"/"+PartNumber+".txt")
+                    if not os.path.isfile(self.path_test_results+"/"+PartNumber+"/"+PartNumber+".txt"):
+                        self.sc.print(PartNumber+".txt")
+                        shutil.copy(path_to_txt_file, self.path_test_results+"/"+PartNumber+"/"+PartNumber+".txt")
                 
                 # read mpt files
                 if os.path.isfile(path_to_mpt_file):
@@ -135,23 +137,24 @@ class main:
         SerialNumber = self.filter(SerialNumber)
         DateCode = self.filter(DateCode)
         path = self.path_test_results+"/"+PartNumber
-        self.sc.print(SerialNumber+"_"+DateCode+"_"+PartNumber+".html")
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        
-        file = open(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html", 'w')
-        file.write("<html>\n")
-        file.write("<head>\n")
-        file.write("<style>\n")
-        file.write("html{font-family:Courier New; font-size:10pt;}\n")
-        file.write("</style>\n")
-        file.write("</head>\n")
-        file.write("<body>\n")
-        for line in Log:
-            file.write(line.replace(" ", "&nbsp")+"<br>\n")
-        file.write("</body>\n")
-        file.write("</html>\n")
-        file.close()
+        if not os.path.isfile(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html"):
+            self.sc.print(SerialNumber+"_"+DateCode+"_"+PartNumber+".html")
+            if not os.path.isdir(path):
+                os.makedirs(path)
+            
+            file = open(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html", 'w')
+            file.write("<html>\n")
+            file.write("<head>\n")
+            file.write("<style>\n")
+            file.write("html{font-family:Courier New; font-size:10pt;}\n")
+            file.write("</style>\n")
+            file.write("</head>\n")
+            file.write("<body>\n")
+            for line in Log:
+                file.write(line.replace(" ", "&nbsp")+"<br>\n")
+            file.write("</body>\n")
+            file.write("</html>\n")
+            file.close()
     
     def filter(self, txt):
         txt = txt.upper()
