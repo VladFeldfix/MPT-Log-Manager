@@ -91,7 +91,7 @@ class main:
                         
                     # create backup
                     if lines_qty > 500000:
-                        self.make_a_backup(path_to_csv_file, 1)
+                        self.make_a_backup(path_to_lot_file, 1)
 
                 # read txt files
                 if os.path.isfile(path_to_txt_file):
@@ -136,31 +136,32 @@ class main:
         PartNumber = self.filter(PartNumber)
         SerialNumber = self.filter(SerialNumber)
         DateCode = self.filter(DateCode)
-        path = self.path_test_results+"/"+PartNumber
-        if not os.path.isfile(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html"):
-            self.sc.print(SerialNumber+"_"+DateCode+"_"+PartNumber+".html")
-            if not os.path.isdir(path):
-                os.makedirs(path)
-            
-            file = open(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html", 'w')
-            file.write("<html>\n")
-            file.write("<head>\n")
-            file.write("<style>\n")
-            file.write("html{font-family:Courier New; font-size:10pt;}\n")
-            file.write("</style>\n")
-            file.write("</head>\n")
-            file.write("<body>\n")
-            for line in Log:
-                file.write(line.replace(" ", "&nbsp")+"<br>\n")
-            file.write("</body>\n")
-            file.write("</html>\n")
-            file.close()
+        if PartNumber != "" and SerialNumber != "" and DateCode != "" :
+            path = self.path_test_results+"/"+PartNumber
+            if not os.path.isfile(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html"):
+                self.sc.print(SerialNumber+"_"+DateCode+"_"+PartNumber+".html")
+                if not os.path.isdir(path):
+                    os.makedirs(path)
+                
+                file = open(path+"/"+SerialNumber+"_"+DateCode+"_"+PartNumber+".html", 'w')
+                file.write("<html>\n")
+                file.write("<head>\n")
+                file.write("<style>\n")
+                file.write("html{font-family:Courier New; font-size:10pt;}\n")
+                file.write("</style>\n")
+                file.write("</head>\n")
+                file.write("<body>\n")
+                for line in Log:
+                    file.write(line.replace(" ", "&nbsp")+"<br>\n")
+                file.write("</body>\n")
+                file.write("</html>\n")
+                file.close()
     
     def filter(self, txt):
         txt = txt.upper()
         txt = txt.strip()
         return_value = ""
-        AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- "
+        AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_ "
         for ch in txt:
             if ch in AllowedChars:
                 return_value += ch
