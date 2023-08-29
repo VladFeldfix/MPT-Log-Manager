@@ -1,3 +1,3 @@
-MPT Folder > C:\Users\mig_rprod\Desktop\New folder\MPT
-Test Results > C:\Users\mig_rprod\Desktop\New folder\TestResults
-Mpt links > C:\Users\mig_rprod\Desktop\New folder\TestResults\MPTLinks.txt
+MPT Folder > C:\MPT\MPT TEST PROGRAM\Rafael
+Test Results > C:\Documents and Settings\user\My Documents\TestReports
+Mpt links > C:\MPT/MPTlinks.properties

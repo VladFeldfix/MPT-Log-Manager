@@ -5,7 +5,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "1.0")
+        self.sc = SmartConsole("MPT Log Manager", "2.1")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
@@ -95,12 +95,29 @@ class main:
 
                 # read txt files
                 if os.path.isfile(path_to_txt_file):
+                    # if there is no folder, make a new folder
                     if not os.path.isdir(self.path_test_results+"/"+PartNumber):
                         os.makedirs(self.path_test_results+"/"+PartNumber)
+                    
+                    # if the txt file is not in the folder, copy it into the folder
                     if not os.path.isfile(self.path_test_results+"/"+PartNumber+"/"+PartNumber+".txt"):
                         self.sc.print(PartNumber+".txt")
                         shutil.copy(path_to_txt_file, self.path_test_results+"/"+PartNumber+"/"+PartNumber+".txt")
-                
+                    # if the txt file is in the test results folder, compare their revisions
+                    else:
+                        original_file = open(self.path_test_results+"/"+PartNumber+"/"+PartNumber+".txt", 'r')
+                        original_file_lines = original_file.readlines()
+                        original_file.close()
+
+                        new_file = open(path_to_txt_file, 'r')
+                        new_file_lines = new_file.readlines()
+                        new_file.close()
+
+                        ln = 0
+                        for line in original_file_lines:
+                            if line != new_file_lines[ln]:
+                                self.sc.fatal_error("There have been a change in the program: "+PartNumber+".txt, see what the change is and update the file manually")
+                            ln += 1
                 # read mpt files
                 if os.path.isfile(path_to_mpt_file):
                     mptlinks.append((PartNumber, Group, path_to_mpt_file))
