@@ -48,6 +48,7 @@ class main:
                 path_to_lot_file = self.main_path+"/"+Group+"/"+PartNumber+"/"+PartNumber+".lot"
                 path_to_txt_file = self.main_path+"/"+Group+"/"+PartNumber+"/"+PartNumber+".txt"
                 path_to_mpt_file = self.main_path+"/"+Group+"/"+PartNumber+"/"+PartNumber+".mpt"
+                path_to_csv_file = self.main_path+"/"+Group+"/"+PartNumber+"/"+PartNumber+".csv"
 
                 # read csv files                
                 if os.path.isfile(path_to_lot_file):
@@ -121,6 +122,32 @@ class main:
                 # read mpt files
                 if os.path.isfile(path_to_mpt_file):
                     mptlinks.append((PartNumber, Group, path_to_mpt_file))
+
+                # read csv files
+                if os.path.isfile(path_to_csv_file):
+                    # if there is no folder, make a new folder
+                    if not os.path.isdir(self.path_test_results+"/"+PartNumber):
+                        os.makedirs(self.path_test_results+"/"+PartNumber)
+
+                    # if the csv file is not in the folder, copy it into the folder
+                    if not os.path.isfile(self.path_test_results+"/"+PartNumber+"/"+PartNumber+".csv"):
+                        self.sc.print(PartNumber+".csv")
+                        shutil.copy(path_to_csv_file, self.path_test_results+"/"+PartNumber+"/"+PartNumber+".csv")
+                    # if the csv file is in the test results folder, compare their revisions
+                    else:
+                        original_file = open(self.path_test_results+"/"+PartNumber+"/"+PartNumber+".csv", 'r')
+                        original_file_lines = original_file.readlines()
+                        original_file.close()
+
+                        new_file = open(path_to_csv_file, 'r')
+                        new_file_lines = new_file.readlines()
+                        new_file.close()
+
+                        ln = 0
+                        for line in original_file_lines:
+                            if line != new_file_lines[ln]:
+                                self.sc.fatal_error("There have been a change in the program: "+PartNumber+".csv, see what the change is and update the file manually")
+                            ln += 1
 
         # create mpt links
         MPTlinksfile = open(self.path_mpt_links, 'w')
