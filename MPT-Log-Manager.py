@@ -6,7 +6,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "2.1")
+        self.sc = SmartConsole("MPT Log Manager", "1.0")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
