@@ -6,7 +6,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "2.0")
+        self.sc = SmartConsole("MPT Log Manager", "2.1")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
@@ -214,9 +214,10 @@ class main:
             if previous_path != path:
                 if year == self.Current_year:
                     path = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".lot"
-                backupFile = open(path, 'w')
-                backupFile.write(save)
-                backupFile.close()
+                if not os.path.isfile(path):
+                    backupFile = open(path, 'w')
+                    backupFile.write(save)
+                    backupFile.close()
                 save = ""
                 previous_path = path
                 backpath = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".bak"
