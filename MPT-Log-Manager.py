@@ -7,7 +7,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "2.3")
+        self.sc = SmartConsole("MPT Log Manager", "3.0")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
@@ -62,7 +62,8 @@ class main:
             group = self.groups[part_number]
             path = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".lot"
             path_to_mpt_file = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".mpt"
-            self.mptlinks.append((part_number, group, path_to_mpt_file))
+            if os.path.isfile(path_to_mpt_file):
+                self.mptlinks.append((part_number, group, path_to_mpt_file))
 
             # if the file exists
             if os.path.isfile(path):
