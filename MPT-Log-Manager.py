@@ -234,16 +234,59 @@ class main:
     def generate_MPTlinks(self):
         self.sc.print("Updating MPTLINKS...")
         MPTlinksfile = open(self.path_mpt_links, 'w')
-        for link in self.mptlinks:     
+        for link in self.mptlinks:
             PartNumber = link[0]
             Group = link[1]
             path_to_mpt_file = link[2]
+            Rev = self.get_rev(path_to_mpt_file)
             path_to_mpt_file = path_to_mpt_file.replace("/", "\\")
-            MPTlinksfile.write(PartNumber+".Description="+PartNumber+"\n")
-            MPTlinksfile.write(PartNumber+".Description="+PartNumber+"\n")
+            MPTlinksfile.write(PartNumber+".Description="+PartNumber+Rev+"\n")
+            #MPTlinksfile.write(PartNumber+".Description="+PartNumber+"\n")
             MPTlinksfile.write(PartNumber+".LinkGroup="+Group+"\n")
             MPTlinksfile.write(PartNumber+"="+path_to_mpt_file+"\n")
             #self.sc.print("Added MPT link: "+PartNumber)
         MPTlinksfile.close()
+    
+    def get_rev(self,path):
+        # set default result
+        result = "[!] Failed to find software part number"
+
+        # read txt file
+        path = path.replace(".mpt",".txt")
+        rev = ""
+        sw = ""
+        if os.path.isfile(path):
+            file = open(path, 'r')
+            lines = file.readlines()
+            file.close()
+            
+            # read each line to find the relevant rev
+            rev = ""
+            sw = ""
+            for line in lines:
+                # get wire diagram rev
+                if "Wire Diagram".upper() in line.upper():
+                    rev = line.upper()
+                
+                # get SW part Number
+                if "SW part Number".upper() in line.upper():
+                    sw = line.upper()
+
+            # if a revision was found extract it from file
+            if "REV" in rev:
+                rev = rev.split("REV")
+                rev = rev[1]
+                rev = re.sub(r'[^a-zA-Z0-9]', '',rev)
+                rev = rev.strip()
+
+            if ":" in sw:
+                sw = sw.split(":")
+                sw = sw[1]
+                sw = sw.strip()
+
+        if sw != "":
+            result = sw+" REV.:"+rev
+            
+        return result
 
 main()
