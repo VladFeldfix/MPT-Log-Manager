@@ -240,7 +240,7 @@ class main:
             path_to_mpt_file = link[2]
             Rev = self.get_rev(path_to_mpt_file)
             path_to_mpt_file = path_to_mpt_file.replace("/", "\\")
-            MPTlinksfile.write(PartNumber+".Description="+PartNumber+Rev+"\n")
+            MPTlinksfile.write(PartNumber+".Description="+Rev+"\n")
             #MPTlinksfile.write(PartNumber+".Description="+PartNumber+"\n")
             MPTlinksfile.write(PartNumber+".LinkGroup="+Group+"\n")
             MPTlinksfile.write(PartNumber+"="+path_to_mpt_file+"\n")
@@ -266,11 +266,13 @@ class main:
             for line in lines:
                 # get wire diagram rev
                 if "Wire Diagram".upper() in line.upper():
-                    rev = line.upper()
+                    if rev == "":
+                        rev = line.upper()
                 
                 # get SW part Number
                 if "SW part Number".upper() in line.upper():
-                    sw = line.upper()
+                    if sw == "":
+                        sw = line.upper()
 
             # if a revision was found extract it from file
             if "REV" in rev:
