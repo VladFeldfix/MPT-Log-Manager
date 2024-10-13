@@ -7,10 +7,11 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "3.0")
+        self.sc = SmartConsole("MPT Log Manager", "3.1")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
+        self.sc.add_main_menu_item("PASS AND FAIL LOGS", self.passfail)
 
         # get settings
         self.main_path = self.sc.get_setting("MPT Folder")
@@ -30,6 +31,58 @@ class main:
 
         # display main menu
         self.sc.start()
+
+    def passfail(self):
+        group = self.sc.choose("Choose a group",("Rafael1","Rafael2"))
+        part_number = self.sc.input("Insert part number")
+        file_path = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".lot"
+        self.sc.test_path(file_path)
+        resut_path = self.path_test_results+"/"+part_number+"/"+part_number+" PASS & FAIL"
+        if not os.path.exists(resut_path):
+            os.makedirs(resut_path)
+        file = open(file_path, 'r')
+        lines = file.readlines()
+        file.close()
+        ignore = False
+        log = []
+        index = 1
+        date = ""
+        serial_number = ""
+
+        for line in lines:
+            if "+---------------------------------+" in line:
+                if not ignore:
+                    ignore = True # ignore the next line
+                    
+                    # save log
+                    if len(log) > 0:
+                        new_file_name = resut_path+"/"+str(index)+"_"+date+"_"+serial_number+".txt"
+                        self.sc.print(new_file_name)
+                        file = open(new_file_name, 'w')
+                        index += 1
+                        for l in log:
+                            file.write(l)
+                        file.close()
+                        log = []
+                else:
+                    ignore = False
+            
+            log.append(line)
+
+            if "LOT NUMBER" in line:
+                date = line
+                date = date.replace("|", "").replace(" ", "").replace("\n", "")
+                date = date.split(":")
+                date = date[1]
+            
+            if "SERIAL NUMBER" in line.upper():
+                serial_number = line
+                serial_number = serial_number.replace(" ", "").replace("\n", "")
+                serial_number = serial_number.split(":")
+                serial_number = serial_number[1]
+
+        self.sc.restart()
+
 
     def run(self):
         self.read_logs()
