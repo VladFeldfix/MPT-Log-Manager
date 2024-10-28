@@ -1,3 +1,0 @@
-MPT Folder > C:\Users\me\test
-Test Results > C:\Users\me\Reports
-Mpt links > C:\Users\me\MPTlinks.properties
