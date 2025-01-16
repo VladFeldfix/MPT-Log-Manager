@@ -7,7 +7,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "3.1")
+        self.sc = SmartConsole("MPT Log Manager", "3.4")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
@@ -217,12 +217,43 @@ class main:
             scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".txt"
             new = self.path_test_results+"/"+part_number+"/"+part_number+".txt"
             if os.path.isfile(scr):
-                shutil.copy(scr, new)
+                if os.path.isfile(new):
+                    same = self.compare_files(scr, new)
+                    if not same:
+                        self.sc.fatal_error("There was a version update to: "+part_number+".txt"+" in "+group)
+                else:
+                    shutil.copy(scr, new)
 
             scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".csv"
             new = self.path_test_results+"/"+part_number+"/"+part_number+".csv"
             if os.path.isfile(scr):
-                shutil.copy(scr, new)
+                if os.path.isfile(new):
+                    same = self.compare_files(scr, new)
+                    if not same:
+                        self.sc.fatal_error("There was a version update to: "+part_number+".csv"+" in "+group)
+                else:
+                    shutil.copy(scr, new)
+        
+    def compare_files(self, scr, new):
+        file = open(scr, 'r')
+        scr_lines = file.readlines()
+        file.close()
+        
+        file = open(new, 'r')
+        new_lines = file.readlines()
+        file.close()
+
+        same = True
+        if len(scr_lines) != len(new_lines):
+            same = False
+        else:
+            i = 0
+            for line in scr_lines:
+                if line != new_lines[i]:
+                    same = False
+                i += 1
+        
+        return same
         
     def backup(self):
         self.sc.print("Generating backup files...")
