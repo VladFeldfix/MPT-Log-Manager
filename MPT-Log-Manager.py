@@ -7,7 +7,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "3.4")
+        self.sc = SmartConsole("MPT Log Manager", "3.5")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
@@ -190,7 +190,13 @@ class main:
                 datecode = re.sub(r'[^a-zA-Z0-9-_ ]', '',datecode)
                 part_number = re.sub(r'[^a-zA-Z0-9-_ ]', '',part_number)
 
-                path = folder+"/"+serial_number+"_"+datecode+"_"+part_number+".html"
+                if not os.path.isdir(folder+"/Test Results"):
+                    os.makedirs(folder+"/Test Results")
+
+                if not os.path.isdir(folder+"/Test Results/"+str(year)):
+                    os.makedirs(folder+"/Test Results/"+str(year))
+
+                path = folder+"/Test Results/"+str(year)+"/"+serial_number+"_"+datecode+"_"+part_number+".html"
 
                 # generate html file
                 if passed and serial_number != "" and datecode != "" and part_number != "":
@@ -212,10 +218,16 @@ class main:
                         htmlfile.write("</html>\n")
                         htmlfile.close()
                 
-            # save csv and txt
+            # save csv, txt, and cal
             group = self.groups[part_number]
+
+
             scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".txt"
-            new = self.path_test_results+"/"+part_number+"/"+part_number+".txt"
+            if not os.path.isdir(self.path_test_results+"/"+part_number+"/Test Program"):
+                os.makedirs(self.path_test_results+"/"+part_number+"/Test Program")
+            if not os.path.isdir(self.path_test_results+"/"+part_number+"/Test Program/MPT5000L"):
+                os.makedirs(self.path_test_results+"/"+part_number+"/Test Program/MPT5000L")
+            new = self.path_test_results+"/"+part_number+"/Test Program/MPT5000L/"+part_number+".txt"
             if os.path.isfile(scr):
                 if os.path.isfile(new):
                     same = self.compare_files(scr, new)
@@ -225,12 +237,22 @@ class main:
                     shutil.copy(scr, new)
 
             scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".csv"
-            new = self.path_test_results+"/"+part_number+"/"+part_number+".csv"
+            new = self.path_test_results+"/"+part_number+"/Test Program/MPT5000L/"+part_number+".csv"
             if os.path.isfile(scr):
                 if os.path.isfile(new):
                     same = self.compare_files(scr, new)
                     if not same:
                         self.sc.fatal_error("There was a version update to: "+part_number+".csv"+" in "+group)
+                else:
+                    shutil.copy(scr, new)
+
+            scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".cal"
+            new = self.path_test_results+"/"+part_number+"/Test Program/MPT5000L/"+part_number+".cal"
+            if os.path.isfile(scr):
+                if os.path.isfile(new):
+                    same = self.compare_files(scr, new)
+                    if not same:
+                        self.sc.fatal_error("There was a version update to: "+part_number+".cal"+" in "+group)
                 else:
                     shutil.copy(scr, new)
         
