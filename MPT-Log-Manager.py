@@ -7,7 +7,7 @@ class main:
     # constructor
     def __init__(self):
         # load smart console
-        self.sc = SmartConsole("MPT Log Manager", "3.5")
+        self.sc = SmartConsole("MPT Log Manager", "3.1")
 
         # set-up main memu
         self.sc.add_main_menu_item("RUN", self.run)
@@ -190,13 +190,7 @@ class main:
                 datecode = re.sub(r'[^a-zA-Z0-9-_ ]', '',datecode)
                 part_number = re.sub(r'[^a-zA-Z0-9-_ ]', '',part_number)
 
-                if not os.path.isdir(folder+"/Test Results"):
-                    os.makedirs(folder+"/Test Results")
-
-                if not os.path.isdir(folder+"/Test Results/"+str(year)):
-                    os.makedirs(folder+"/Test Results/"+str(year))
-
-                path = folder+"/Test Results/"+str(year)+"/"+serial_number+"_"+datecode+"_"+part_number+".html"
+                path = folder+"/"+serial_number+"_"+datecode+"_"+part_number+".html"
 
                 # generate html file
                 if passed and serial_number != "" and datecode != "" and part_number != "":
@@ -218,64 +212,17 @@ class main:
                         htmlfile.write("</html>\n")
                         htmlfile.close()
                 
-            # save csv, txt, and cal
+            # save csv and txt
             group = self.groups[part_number]
-
-
             scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".txt"
-            if not os.path.isdir(self.path_test_results+"/"+part_number+"/Test Program"):
-                os.makedirs(self.path_test_results+"/"+part_number+"/Test Program")
-            if not os.path.isdir(self.path_test_results+"/"+part_number+"/Test Program/MPT5000L"):
-                os.makedirs(self.path_test_results+"/"+part_number+"/Test Program/MPT5000L")
-            new = self.path_test_results+"/"+part_number+"/Test Program/MPT5000L/"+part_number+".txt"
+            new = self.path_test_results+"/"+part_number+"/"+part_number+".txt"
             if os.path.isfile(scr):
-                if os.path.isfile(new):
-                    same = self.compare_files(scr, new)
-                    if not same:
-                        self.sc.fatal_error("There was a version update to: "+part_number+".txt"+" in "+group)
-                else:
-                    shutil.copy(scr, new)
+                shutil.copy(scr, new)
 
             scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".csv"
-            new = self.path_test_results+"/"+part_number+"/Test Program/MPT5000L/"+part_number+".csv"
+            new = self.path_test_results+"/"+part_number+"/"+part_number+".csv"
             if os.path.isfile(scr):
-                if os.path.isfile(new):
-                    same = self.compare_files(scr, new)
-                    if not same:
-                        self.sc.fatal_error("There was a version update to: "+part_number+".csv"+" in "+group)
-                else:
-                    shutil.copy(scr, new)
-
-            scr = self.main_path+"/"+group+"/"+part_number+"/"+part_number+".cal"
-            new = self.path_test_results+"/"+part_number+"/Test Program/MPT5000L/"+part_number+".cal"
-            if os.path.isfile(scr):
-                if os.path.isfile(new):
-                    same = self.compare_files(scr, new)
-                    if not same:
-                        self.sc.fatal_error("There was a version update to: "+part_number+".cal"+" in "+group)
-                else:
-                    shutil.copy(scr, new)
-        
-    def compare_files(self, scr, new):
-        file = open(scr, 'r')
-        scr_lines = file.readlines()
-        file.close()
-        
-        file = open(new, 'r')
-        new_lines = file.readlines()
-        file.close()
-
-        same = True
-        if len(scr_lines) != len(new_lines):
-            same = False
-        else:
-            i = 0
-            for line in scr_lines:
-                if line != new_lines[i]:
-                    same = False
-                i += 1
-        
-        return same
+                shutil.copy(scr, new)
         
     def backup(self):
         self.sc.print("Generating backup files...")
